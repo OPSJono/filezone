@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Load up .env
+set -o allexport
+[[ -f .env ]] && source .env
+set +o allexport
+args="$@"
+command="mysql -u ${DB_USERNAME} -p${DB_PASSWORD} ${DB_DATABASE} $args";
+echo $command
+docker-compose exec fz-mysql bash -c "/bin/bash -c \"$command\""
