@@ -10,7 +10,15 @@
 | and give it the Closure to call when that URI is requested.
 |
 */
+/**
+ * @var $router \Laravel\Lumen\Routing\Router;
+ */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
+// Uses Auth Middleware
+$router->group(['middleware' => 'auth'], function () use ($router) {
+    $router->get('/', function () use ($router) {
+        return response()->json([
+            'version' => $router->app->version()
+        ]);
+    });
 });

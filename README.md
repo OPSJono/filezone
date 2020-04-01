@@ -40,5 +40,8 @@ server {
 You'll need to restart nginx after making any changes to the configuration file.  
 ```
 sudo service nginx restart
+
+# Allow httpd/nginx to make network connections
+sudo setsebool -P httpd_can_network_connect 1
 ```  
 If you do use a reverse proxy to access the site in this way, the `app_url` in the `.env` will need to match the `listen` directive you use in nginx.
