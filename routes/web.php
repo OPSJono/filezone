@@ -14,6 +14,11 @@
  * @var $router \Laravel\Lumen\Routing\Router;
  */
 
+use App\Http\Controllers\AuthController;
+
+$router->post('/auth/login', ['uses' => 'AuthController@login', 'as' => 'auth.login']);
+$router->post('/auth/register', ['uses' => 'AuthController@register', 'as' => 'auth.register']);
+
 // Uses Auth Middleware
 $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->get('/', function () use ($router) {
