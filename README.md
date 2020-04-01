@@ -23,6 +23,17 @@ If you discover a security vulnerability within Lumen, please send an e-mail to 
 
 The Lumen framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
+### App install steps
+
+```
+cp .env.example .env
+php artisan migrate
+php artisan passport:install --force
+php artisan db:seed # optional
+
+# Manually create an app key in .env (32chars)
+# Set correct DB creds and app URL.
+```
 
 ### Using DNS to access the application
 If you wish to use a DNS name instead of `http://127.0.0.1:8090` to access the application, you can install nginx locally and use reverse proxy.  

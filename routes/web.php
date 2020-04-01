@@ -16,14 +16,17 @@
 
 use App\Http\Controllers\AuthController;
 
+\Dusterio\LumenPassport\LumenPassport::routes($router, ['prefix' => 'v1/oauth']);
+
 $router->post('/auth/login', ['uses' => 'AuthController@login', 'as' => 'auth.login']);
 $router->post('/auth/register', ['uses' => 'AuthController@register', 'as' => 'auth.register']);
 
 // Uses Auth Middleware
 $router->group(['middleware' => 'auth'], function () use ($router) {
-    $router->get('/', function () use ($router) {
+    $router->get('/', function (\Illuminate\Http\Request $request) use ($router) {
         return response()->json([
-            'version' => $router->app->version()
+            'version' => $router->app->version(),
+            'user' => $request->user()
         ]);
     });
 });
