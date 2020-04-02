@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -49,8 +50,22 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->token();
     }
 
-    public function setPassword(string $password):void
+    public function setPassword(string $password): void
     {
         $this->password = app()->make('hash')->make($password);
+    }
+
+    public function invalidateAllTokens(): void
+    {
+        $this->tokens()->where('revoked', false) // Ignore any already revoked tokens
+            ->whereNull('name') // Ignore personal access tokens
+            ->each(function ($token) {
+            /**
+             * @var $token Model
+             */
+            $token->revoked = true;
+            $token->expires_at = Carbon::now();
+            $token->save();
+        });
     }
 }

@@ -11,19 +11,23 @@
 |
 */
 /**
- * @var $router \Laravel\Lumen\Routing\Router;
+ * @var $router Router;
  */
+use Laravel\Lumen\Routing\Router;
 
-use App\Http\Controllers\AuthController;
+use Illuminate\Http\Request;
+use Dusterio\LumenPassport\LumenPassport;
 
-\Dusterio\LumenPassport\LumenPassport::routes($router, ['prefix' => 'v1/oauth']);
+$router->group(['prefix' => 'v1/oauth'], function () use ($router) {
+    LumenPassport::routes($router, ['prefix' => '']);
+    $router->post('register', ['uses' => 'AuthController@register']);
+    $router->post('logout', ['middleware' => 'auth', 'uses' => 'AuthController@logout']);
+});
 
-$router->post('/auth/login', ['uses' => 'AuthController@login', 'as' => 'auth.login']);
-$router->post('/auth/register', ['uses' => 'AuthController@register', 'as' => 'auth.register']);
 
 // Uses Auth Middleware
 $router->group(['middleware' => 'auth'], function () use ($router) {
-    $router->get('/', function (\Illuminate\Http\Request $request) use ($router) {
+    $router->get('/', function (Request $request) use ($router) {
         return response()->json([
             'version' => $router->app->version(),
             'user' => $request->user()

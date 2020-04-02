@@ -59,5 +59,18 @@ class AuthController extends Controller
         ]);
     }
 
+    public function logout()
+    {
+        /**
+         * @var $user User
+         */
+        $user = $this->request->user();
+        $user->invalidateAllTokens();
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
     //
 }
