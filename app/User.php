@@ -45,6 +45,15 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'passport_token'
     ];
 
+    public function can($ability, $arguments = [])
+    {
+        if($this->superuser === 1) {
+            return true;
+        }
+
+        return parent::can($ability, $arguments = []);
+    }
+
     public function getPassportTokenAttribute()
     {
         return $this->token();

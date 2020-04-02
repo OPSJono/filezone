@@ -63,6 +63,7 @@ $app->singleton(
 
 $app->configure('app');
 $app->configure('auth');
+$app->configure('permission');
 
 /*
 |--------------------------------------------------------------------------
@@ -80,7 +81,9 @@ $app->configure('auth');
 // ]);
 
 $app->routeMiddleware([
- 'auth' => App\Http\Middleware\Authenticate::class,
+    'auth'       => App\Http\Middleware\Authenticate::class,
+    'permission' => Spatie\Permission\Middlewares\PermissionMiddleware::class,
+    'role'       => Spatie\Permission\Middlewares\RoleMiddleware::class,
 ]);
 
 // Register two service Oauth2/Passport providers - original one and Lumen adapter
@@ -97,11 +100,24 @@ $app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
 | totally optional, so you are not required to uncomment this line.
 |
 */
+// $app->register(App\Providers\EventServiceProvider::class);
 
 $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
-// $app->register(App\Providers\EventServiceProvider::class);
 $app->register(RedisServiceProvider::class);
+$app->register(Spatie\Permission\PermissionServiceProvider::class);
+
+
+/*
+|--------------------------------------------------------------------------
+| Set some class aliases
+|--------------------------------------------------------------------------
+|
+| We can define some short-hand aliases for certain classes.
+| So that the fully qualified class namespace is not required.
+|
+*/
+$app->alias('cache', \Illuminate\Cache\CacheManager::class);  // if you don't have this already
 
 /*
 |--------------------------------------------------------------------------

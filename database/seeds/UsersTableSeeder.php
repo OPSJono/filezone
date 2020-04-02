@@ -18,6 +18,7 @@ class UsersTableSeeder extends Seeder
             'middle_name' => 'Luke',
             'last_name' => 'Marshall',
             'email' => 'Jonathan@marshalltech.co.uk',
+            'superuser' => '1',
             'password' => app()->make('hash')->make('password'),
         ]);
         factory(User::class, 19)->create();

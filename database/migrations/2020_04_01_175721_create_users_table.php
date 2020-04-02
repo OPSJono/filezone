@@ -19,6 +19,7 @@ class CreateUsersTable extends Migration
             $table->text('middle_name')->nullable();
             $table->text('last_name')->nullable();
             $table->text('email');
+            $table->boolean('superuser')->default(0);
             $table->text('password');
             $table->timestamps();
         });
