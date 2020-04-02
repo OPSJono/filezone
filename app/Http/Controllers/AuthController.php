@@ -34,7 +34,9 @@ class AuthController extends Controller
             'first_name' => 'required|min:2',
             'middle_name' => 'min:2',
             'last_name' => 'min:2',
-            'email' => 'required|unique:users,email',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|confirmed',
+            'password_confirmation' => 'required'
         ]);
 
         if($validator->passes()) {
@@ -56,7 +58,7 @@ class AuthController extends Controller
         return response()->json([
             'success' => false,
             'errors' => $validator->getMessageBag()->toArray()
-        ]);
+        ])->setStatusCode(400);
     }
 
     public function logout()

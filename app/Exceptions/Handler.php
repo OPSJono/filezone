@@ -3,10 +3,17 @@
 namespace App\Exceptions;
 
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\JsonResponse;
+use \Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
+use Laravel\Lumen\Exceptions\Handler as
+    ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -28,7 +35,7 @@ class Handler extends ExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param  \Throwable  $exception
+     * @param Throwable $exception
      * @return void
      *
      * @throws \Exception
@@ -41,14 +48,36 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Throwable  $exception
-     * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+     * @param  Request  $request
+     * @param Throwable $exception
+     * @return Response|JsonResponse
      *
-     * @throws \Throwable
+     * @throws Throwable
+     *
+     * This is the same as the parent method, only I force the JSON response.
      */
     public function render($request, Throwable $exception)
     {
-        return parent::render($request, $exception);
+
+        if (method_exists($exception, 'render')) {
+            return $exception->render($request);
+        } elseif ($exception instanceof Responsable) {
+            return $exception->toResponse($request);
+        }
+
+        if ($exception instanceof HttpResponseException) {
+            return $exception->getResponse();
+        } elseif ($exception instanceof ModelNotFoundException) {
+            $exception = new NotFoundHttpException($exception->getMessage(), $exception);
+        } elseif ($exception instanceof AuthorizationException) {
+            $exception = new HttpException(403, $exception->getMessage());
+        } elseif ($exception instanceof ValidationException && $exception->getResponse()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $exception->errors()
+            ])->setStatusCode(400);
+        }
+
+        return $this->prepareJsonResponse($request, $exception);
     }
 }
