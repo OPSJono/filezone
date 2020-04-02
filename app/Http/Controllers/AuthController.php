@@ -44,7 +44,6 @@ class AuthController extends Controller
             $user->fill($this->request->input());
             $user->setPassword($this->request->input('password'));
 
-
             if($user->save()) {
                 return response()->json([
                     'success' => true,
@@ -67,7 +66,10 @@ class AuthController extends Controller
          * @var $user User
          */
         $user = $this->request->user();
-        $user->invalidateAllTokens();
+
+        if($user instanceof User) {
+            $user->invalidateAllTokens();
+        }
 
         return response()->json([
             'success' => true

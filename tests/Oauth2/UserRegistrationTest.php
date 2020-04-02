@@ -1,24 +1,7 @@
 <?php
 
-use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
-
 class UserRegistrationTest extends TestCase
 {
-    use DatabaseTransactions;
-    use DatabaseMigrations;
-
-    private function insertValidUser()
-    {
-        return $this->call('POST', '/v1/oauth/register', [
-            'first_name' => 'Unit',
-            'middle_name' => 'Absolute',
-            'last_name' => 'Testing',
-            'email' => 'unit@test.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
-        ]);
-    }
 
     /**
      * Test is a user can successfully register a new account using valid information
@@ -69,7 +52,7 @@ class UserRegistrationTest extends TestCase
         $content = json_decode($response->getContent(), true);
         $content2 = json_decode($response2->getContent(), true);
 
-        $this->assertNotEquals(200, $response->getStatusCode());
+        $this->assertEquals(400, $response->getStatusCode());
 
         $this->assertTrue(array_key_exists('success', $content));
         $this->assertFalse($content['success']);
