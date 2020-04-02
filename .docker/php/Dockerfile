@@ -23,7 +23,7 @@ RUN composer install \
 #==================
 # Application
 #==================
-FROM php:7.2.18-fpm
+FROM php:7.4-fpm
 
 ARG xdebug=off
 
