@@ -20,6 +20,19 @@ class Folder extends BaseModel
         'description',
     ];
 
+    /**
+     * @param $value
+     * @void
+     */
+    public function setParentFolderIdAttribute($value)
+    {
+        if(empty(trim($value))) {
+            $value = null;
+        }
+
+        $this->attributes['parent_folder_id'] = $value;
+    }
+
     public function parentFolder()
     {
         return $this->hasOne(Folder::class, 'id', 'parent_folder_id');

@@ -31,6 +31,7 @@ $router->group(['prefix' => 'v1/oauth'], function () use ($router) {
 $router->group(['middleware' => 'auth', 'prefix' => 'v1'], function () use ($router) {
     $router->group(['prefix' => 'folders'], function () use ($router) {
         $router->get('/', ['uses' => 'FolderController@index']);
+        $router->post('create', ['uses' => 'FolderController@create']);
     });
     $router->get('/', function (Request $request) use ($router) {
         return response()->json([

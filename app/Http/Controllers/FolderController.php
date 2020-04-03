@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Folder;
 use App\Models\User;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -43,6 +45,37 @@ class FolderController extends Controller
             'success' => true,
             'folders' => $folders
         ]);
+    }
+
+    public function create()
+    {
+        /**
+         * @var $validator Validator
+         */
+        $validator = app()->make('validator')->make($this->request->input(), [
+            'parent_folder_id' => 'exists:Folders,id',
+            'name' => 'required|min:2',
+            'description' => 'min:2',
+        ]);
+
+        if($validator->passes()) {
+            $folder = new Folder();
+            $folder->fill($this->request->input());
+
+            if($folder->save()) {
+                return response()->json([
+                    'success' => true,
+                    'folder' => $folder->toArray()
+                ]);
+            } else {
+                $validator->getMessageBag()->add('general', 'Failed to save record.');
+            }
+        }
+
+        return response()->json([
+            'success' => false,
+            'errors' => $validator->getMessageBag()->toArray()
+        ])->setStatusCode(400);
     }
 
     //
