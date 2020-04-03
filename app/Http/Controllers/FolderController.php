@@ -78,5 +78,36 @@ class FolderController extends Controller
         ])->setStatusCode(400);
     }
 
+    public function update($id)
+    {
+        /**
+         * @var $validator Validator
+         */
+        $validator = app()->make('validator')->make($this->request->input(), [
+            'parent_folder_id' => 'exists:Folders,id',
+            'name' => 'required|min:2',
+            'description' => 'min:2',
+        ]);
+
+        if($validator->passes()) {
+            $folder = Folder::findOrFail($id);
+            $folder->fill($this->request->input());
+
+            if($folder->save()) {
+                return response()->json([
+                    'success' => true,
+                    'folder' => $folder->toArray()
+                ]);
+            } else {
+                $validator->getMessageBag()->add('general', 'Failed to save record.');
+            }
+        }
+
+        return response()->json([
+            'success' => false,
+            'errors' => $validator->getMessageBag()->toArray()
+        ])->setStatusCode(400);
+    }
+
     //
 }
