@@ -10,12 +10,14 @@ use Illuminate\Database\Eloquent\Model;
 use Laravel\Lumen\Auth\Authorizable;
 use Laravel\Passport\HasApiTokens;
 
-/**
- * @method static create(array $array)
- */
-class User extends Model implements AuthenticatableContract, AuthorizableContract
+class User extends BaseModel implements AuthenticatableContract, AuthorizableContract
 {
     use HasApiTokens, Authenticatable, Authorizable;
+
+    /**
+     * @var bool
+     */
+    public $timestamps = true;
 
     /**
      * The attributes that are mass assignable.
