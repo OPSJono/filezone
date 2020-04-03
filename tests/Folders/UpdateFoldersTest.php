@@ -3,7 +3,7 @@
 class UpdateFoldersTest extends TestCase
 {
     /**
-     * Test a user can create a folder with valid info
+     * Test a user can update a folder with valid info
      *
      * @return void
      * @test
@@ -27,7 +27,7 @@ class UpdateFoldersTest extends TestCase
     }
 
     /**
-     * Test validation rules for creating a folder
+     * Test validation rules for updating a folder
      *
      * @return void
      * @test

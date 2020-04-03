@@ -1,16 +1,14 @@
 <?php
 
+use Illuminate\Support\Facades\Artisan;
 use Laravel\Lumen\Application;
-use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Laravel\Lumen\Testing\TestCase as BaseTestCase;
 use Laravel\Lumen\Testing\WithoutMiddleware;
 
 abstract class TestCase extends BaseTestCase
 {
-    use DatabaseMigrations;
     use DatabaseTransactions;
-
     use WithoutMiddleware;
 
     protected $client_id = 10000;
@@ -27,6 +25,32 @@ abstract class TestCase extends BaseTestCase
     public function createApplication()
     {
         return require __DIR__.'/../bootstrap/app.php';
+    }
+
+    /**
+     * Setup the application
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->prepareForTests();
+    }
+
+    /**
+     * Prepare for the tests
+     */
+    private function prepareForTests()
+    {
+        Artisan::call('migrate');
+        Artisan::call('db:seed');
+    }
+
+    /**
+     * Tear the app down
+     */
+    public function tearDown(): void
+    {
+        parent::tearDown();
     }
 
     protected function insertValidPasswordClient()

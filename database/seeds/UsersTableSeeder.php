@@ -23,7 +23,7 @@ class UsersTableSeeder extends Seeder
         ]);
         User::create([
             'first_name' => 'Agent',
-            'middle_name' => '',
+            'middle_name' => null,
             'last_name' => 'Smith',
             'email' => 'Agent@smith.co.uk',
             'superuser' => '0',
