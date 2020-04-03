@@ -25,4 +25,14 @@ class File extends BaseModel
         'storage_region',
         'storage_path',
     ];
+
+    public function folder()
+    {
+        return $this->hasOne(Folder::class, 'id', 'folder_id');
+    }
+
+    public function permissions()
+    {
+        return $this->hasMany(FilePermission::class, 'file_id', 'id');
+    }
 }
