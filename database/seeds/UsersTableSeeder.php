@@ -21,6 +21,14 @@ class UsersTableSeeder extends Seeder
             'superuser' => '1',
             'password' => app()->make('hash')->make('password'),
         ]);
-        factory(User::class, 19)->create();
+        User::create([
+            'first_name' => 'Agent',
+            'middle_name' => '',
+            'last_name' => 'Smith',
+            'email' => 'Agent@smith.co.uk',
+            'superuser' => '0',
+            'password' => app()->make('hash')->make('password'),
+        ]);
+        factory(User::class, 18)->create();
     }
 }
