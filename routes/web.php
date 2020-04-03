@@ -13,6 +13,8 @@
 /**
  * @var $router Router;
  */
+
+use App\Models\User;
 use Laravel\Lumen\Routing\Router;
 
 use Illuminate\Http\Request;
@@ -26,11 +28,14 @@ $router->group(['prefix' => 'v1/oauth'], function () use ($router) {
 
 
 // Uses Auth Middleware
-$router->group(['middleware' => 'auth'], function () use ($router) {
+$router->group(['middleware' => 'auth', 'prefix' => 'v1'], function () use ($router) {
+    $router->group(['prefix' => 'folders'], function () use ($router) {
+        $router->get('/', ['uses' => 'FolderController@index']);
+    });
     $router->get('/', function (Request $request) use ($router) {
         return response()->json([
             'version' => $router->app->version(),
-            'user' => $request->user()
+            'user' => User::currentUser(),
         ]);
     });
 });

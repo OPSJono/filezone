@@ -65,7 +65,7 @@ class AuthController extends Controller
         /**
          * @var $user User
          */
-        $user = $this->request->user();
+        $user = User::currentUser();
 
         if($user instanceof User) {
             $user->invalidateAllTokens();

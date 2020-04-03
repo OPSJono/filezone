@@ -7,6 +7,8 @@ use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Laravel\Lumen\Auth\Authorizable;
 use Laravel\Passport\HasApiTokens;
 
@@ -46,6 +48,36 @@ class User extends BaseModel implements AuthenticatableContract, AuthorizableCon
     protected $appends = [
         'passport_token'
     ];
+
+    public static function currentUser(): User
+    {
+        /**
+         * @var Request $request
+         */
+        $request = app()->make('request');
+        $user = $request->user();
+
+        if(is_null($user)) {
+            $user = new User([
+                'id' => 0,
+                'first_name' => 'dummy',
+                'last_name' => 'user',
+                'email' => 'dummyuser@test.com',
+            ]);
+        }
+
+        return $user;
+    }
+
+    public function listOwnedFolders(): Collection
+    {
+        return $this->folders;
+    }
+
+    public function folders()
+    {
+        return $this->hasMany(Folder::class, 'created_by', 'id');
+    }
 
     public function can($ability, $arguments = [])
     {
