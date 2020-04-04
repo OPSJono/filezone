@@ -109,5 +109,25 @@ class FolderController extends Controller
         ])->setStatusCode(400);
     }
 
-    //
+    public function delete($id)
+    {
+        /**
+         * @var Folder $folder
+         */
+        $folder = Folder::findOrFail($id);
+        $folder->fill($this->request->input());
+
+        if($folder->delete()) {
+            return response()->json([
+                'success' => true,
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'errors' => [
+                'general' => 'Failed to delete record'
+            ]
+        ]);
+    }
 }

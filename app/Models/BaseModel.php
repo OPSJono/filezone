@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static create(array $array)
  * @method static findOrFail(array $array)
  * @method toArray:array
+ * @method delete:bool
  */
 class BaseModel extends Model
 {

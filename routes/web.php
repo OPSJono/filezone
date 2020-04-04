@@ -50,5 +50,6 @@ $router->group(['middleware' => 'auth', 'prefix' => 'v1'], function () use ($rou
         $router->get('/', ['uses' => 'FolderController@index']);
         $router->post('create', ['uses' => 'FolderController@create']);
         $router->post('{id}/update', ['uses' => 'FolderController@update']);
+        $router->post('{id}/delete', ['uses' => 'FolderController@delete']);
     });
 });
