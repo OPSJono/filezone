@@ -10,7 +10,7 @@ class CreateFoldersTest extends TestCase
      */
     public function testUserCanCreateAFolder()
     {
-        $response = $this->call('POST', '/v1/folders/create', [
+        $response = $this->asSuperUser('POST', '/v1/folders/create', [
             'parent_folder_id' => '',
             'name' => 'Test Folder',
             'description' => 'This is a folder created  via unit tests.',
@@ -34,7 +34,7 @@ class CreateFoldersTest extends TestCase
      */
     public function testCreateFolderValidation()
     {
-        $response = $this->call('POST', '/v1/folders/create', [
+        $response = $this->asSuperUser('POST', '/v1/folders/create', [
             'parent_folder_id' => '99999',
             'name' => '',
             'description' => 'This is a folder created  via unit tests.',

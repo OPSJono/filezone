@@ -10,7 +10,7 @@ class UpdateFoldersTest extends TestCase
      */
     public function testUserCanUpdateAFolder()
     {
-        $response = $this->call('POST', '/v1/folders/1/update', [
+        $response = $this->asSuperUser('POST', '/v1/folders/1/update', [
             'parent_folder_id' => '',
             'name' => 'Test Folder (updated)',
             'description' => 'This is a folder updated via unit tests.',
@@ -34,7 +34,7 @@ class UpdateFoldersTest extends TestCase
      */
     public function testUpdateFolderValidation()
     {
-        $response = $this->call('POST', '/v1/folders/1/update', [
+        $response = $this->asSuperUser('POST', '/v1/folders/1/update', [
             'parent_folder_id' => '99999',
             'name' => '',
             'description' => 'This is a folder updated via unit tests.',

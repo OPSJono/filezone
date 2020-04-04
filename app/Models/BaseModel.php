@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
+ * @method static find(int|string $id)
  * @method static create(array $array)
  * @method static findOrFail(array $array)
  * @method toArray:array

@@ -1,6 +1,6 @@
 <?php
 
-class UserLoginTest extends TestCase
+class UserLoginTest extends BaseOauth
 {
     /**
      * Test is a user can successfully register a new account using valid information
@@ -36,7 +36,7 @@ class UserLoginTest extends TestCase
         $this->insertValidPasswordClient();
         $this->insertValidUser();
 
-        $response = $this->call('POST', '/v1/oauth/token', [
+        $response = $this->asGuest('POST', '/v1/oauth/token', [
             'grant_type' => 'password',
             'client_id' => $this->client_id,
             'client_secret' => $this->client_secret,

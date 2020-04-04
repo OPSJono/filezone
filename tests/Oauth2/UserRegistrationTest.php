@@ -1,6 +1,6 @@
 <?php
 
-class UserRegistrationTest extends TestCase
+class UserRegistrationTest extends BaseOauth
 {
 
     /**

@@ -10,7 +10,7 @@ class ListFoldersTest extends TestCase
      */
     public function testUserCanListFolders()
     {
-        $response = $this->call('GET', '/v1/folders');
+        $response = $this->asSuperUser('GET', '/v1/folders');
         $content = json_decode($response->getContent(), true);
 
 //        dd($content);

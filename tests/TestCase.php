@@ -1,21 +1,18 @@
 <?php
 
+use App\Models\User;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Lumen\Application;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Laravel\Lumen\Testing\TestCase as BaseTestCase;
-use Laravel\Lumen\Testing\WithoutMiddleware;
 
 abstract class TestCase extends BaseTestCase
 {
     use DatabaseTransactions;
-    use WithoutMiddleware;
 
-    protected $client_id = 10000;
-    protected $client_secret = '';
-    protected $token_name = 'Unit Testing Password Token';
-    protected $username = 'unit@test.com';
-    protected $password = 'password';
+    protected User $superUser;
+    protected User $normalUser;
 
     /**
      * Creates the application.
@@ -43,6 +40,9 @@ abstract class TestCase extends BaseTestCase
     {
         Artisan::call('migrate');
         Artisan::call('db:seed');
+
+        $this->superUser = User::find(1);
+        $this->normalUser = User::find(2);
     }
 
     /**
@@ -53,42 +53,56 @@ abstract class TestCase extends BaseTestCase
         parent::tearDown();
     }
 
-    protected function insertValidPasswordClient()
+    /**
+     * Make a request as a Super User
+     *
+     * @param string $method
+     * @param string $uri
+     * @param array $parameters
+     * @param array $cookies
+     * @param array $files
+     * @param array $server
+     * @param string $content
+     * @return Response
+     */
+    protected function asSuperUser($method, $uri, $parameters = [], $cookies = [], $files = [], $server = [], $content = null)
     {
-        app()->make('db')->table('oauth_clients')->insert([
-            'id' => $this->client_id,
-            'user_id' => null,
-            'name' => $this->token_name,
-            'secret' => $this->client_secret,
-            'redirect' => '/',
-            'personal_access_client' => 0,
-            'password_client' => 1,
-            'revoked' => 0,
-        ]);
+        return $this->actingAs($this->superUser, 'api')
+            ->call($method, $uri, $parameters, $cookies, $files, $server, $content);
     }
 
-    protected function insertValidUser()
+    /**
+     * Make a request as a Normal User
+     *
+     * @param string $method
+     * @param string $uri
+     * @param array $parameters
+     * @param array $cookies
+     * @param array $files
+     * @param array $server
+     * @param string $content
+     * @return Response
+     */
+    protected function asNormalUser($method, $uri, $parameters = [], $cookies = [], $files = [], $server = [], $content = null)
     {
-        return $this->call('POST', '/v1/oauth/register', [
-            'id' => 10000,
-            'first_name' => 'Unit',
-            'middle_name' => 'Absolute',
-            'last_name' => 'Testing',
-            'email' => $this->username,
-            'password' => $this->password,
-            'password_confirmation' => $this->password,
-        ]);
+        return $this->actingAs($this->normalUser, 'api')
+            ->call($method, $uri, $parameters, $cookies, $files, $server, $content);
     }
 
-    protected function loginWithValidUser()
+    /**
+     * Make a request as a Guest
+     *
+     * @param string $method
+     * @param string $uri
+     * @param array $parameters
+     * @param array $cookies
+     * @param array $files
+     * @param array $server
+     * @param string $content
+     * @return Response
+     */
+    protected function asGuest($method, $uri, $parameters = [], $cookies = [], $files = [], $server = [], $content = null)
     {
-        return $this->call('POST', '/v1/oauth/token', [
-            'grant_type' => 'password',
-            'client_id' => $this->client_id,
-            'client_secret' => $this->client_secret,
-            'username' => $this->username,
-            'password' => $this->password,
-            'scope' => '',
-        ]);
+        return $this->call($method, $uri, $parameters, $cookies, $files, $server, $content);
     }
 }

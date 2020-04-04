@@ -56,7 +56,7 @@ class OauthTableSeeder extends Seeder
         ]);
 
         $db->table('oauth_access_tokens')->insert([
-            'id' => '06572b294aea7a0ffd7f008acd26d33ca8b022ae503a1c5f705423cac5a3dc1c602a670477f74e76',
+            'id' => '7904e9fae0b1f4eed9609699d15e6cb51dedd4c9984b119a962a7927b9ef115a682e9db4a7ef42fb',
             'user_id' => 1,
             'client_id' => 2,
             'name' => null,
@@ -67,14 +67,14 @@ class OauthTableSeeder extends Seeder
         ]);
 
         $db->table('oauth_refresh_tokens')->insert([
-            'id' => '6466dd3958b8a6ce90a2720588cc47f6bf44d39afab494fbf9f72e136b9ebf4d58c6848b7762dde4',
-            'access_token_id' => '06572b294aea7a0ffd7f008acd26d33ca8b022ae503a1c5f705423cac5a3dc1c602a670477f74e76',
+            'id' => '19c90dbd9481b5e94c344523ceb599afed4c1bef896f667e71533a5ab0bc217f22e783278ef20a01',
+            'access_token_id' => '7904e9fae0b1f4eed9609699d15e6cb51dedd4c9984b119a962a7927b9ef115a682e9db4a7ef42fb',
             'revoked' => 0,
             'expires_at' => Carbon::now()->addYear(),
         ]);
 
         $db->table('oauth_access_tokens')->insert([
-            'id' => '16316768ff2569c297f2a98c0223fc3e5c891623e31a23ca20eebfbb043c43d957c94a964b55d63d',
+            'id' => 'ae12126fdb6e764a94c9628a8b00c371c7b344bce68492b73d78c3c334796e41abf6b847ae88f6a2',
             'user_id' => 2,
             'client_id' => 2,
             'name' => null,
@@ -85,8 +85,8 @@ class OauthTableSeeder extends Seeder
         ]);
 
         $db->table('oauth_refresh_tokens')->insert([
-            'id' => '8df9ce70dc097aad727bc603d9b481141e6762a003c2cf2135df064d1cdc10cc21dbef5d7b31d13d',
-            'access_token_id' => '16316768ff2569c297f2a98c0223fc3e5c891623e31a23ca20eebfbb043c43d957c94a964b55d63d',
+            'id' => 'dd99031d43338b22e250e074e914d6c3964608bd534d7e50eb772267a4c9ec4666f7499d292b71b9',
+            'access_token_id' => 'ae12126fdb6e764a94c9628a8b00c371c7b344bce68492b73d78c3c334796e41abf6b847ae88f6a2',
             'revoked' => 0,
             'expires_at' => Carbon::now()->addYear(),
         ]);
