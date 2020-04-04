@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\File;
 use App\Models\Folder;
 use App\Models\User;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
-class FolderController extends Controller
+class FileController extends Controller
 {
     /**
      * @var Request
@@ -28,23 +30,36 @@ class FolderController extends Controller
     public function index()
     {
         /**
-         * @var $user User
+         * @var $validator Validator
          */
-        $user = User::currentUser();
-
-        $user->load([
-            'folders',
+        $validator = app()->make('validator')->make($this->request->input(), [
+            'folder_id' => 'required|exists:Folders,id',
         ]);
 
         /**
-         * @var $folders Collection
+         * @var $files Builder
          */
-        $folders = $user->listOwnedFolders();
+        $query = File::query();
+
+        if($validator->passes()) {
+            $query = $query->where('folder_id', $this->request->input('folder_id'));
+
+            /**
+             * @var $files Collection
+             */
+            $files = $query->get();
+
+            return response()->json([
+                'success' => true,
+                'files' => $files
+            ]);
+        }
 
         return response()->json([
-            'success' => true,
-            'folders' => $folders
-        ]);
+            'success' => false,
+            'errors' => $validator->getMessageBag()->toArray()
+        ])->setStatusCode(400);
+
     }
 
     public function create()
@@ -53,19 +68,32 @@ class FolderController extends Controller
          * @var $validator Validator
          */
         $validator = app()->make('validator')->make($this->request->input(), [
-            'parent_folder_id' => 'exists:Folders,id',
+            'folder_id' => 'required|exists:Folders,id',
             'name' => 'required|min:2',
             'description' => 'min:2',
+            'storage_region' => 'required',
         ]);
 
         if($validator->passes()) {
-            $folder = new Folder();
-            $folder->fill($this->request->input());
+            $file = new File();
+            $file->fill($this->request->input());
 
-            if($folder->save()) {
+            $file->folder_id = $this->request->input('folder_id');
+
+            $file->extension = '';
+            $file->type = '';
+            $file->size = '';
+
+            $file->storage_method = '';
+            $file->storage_region = $this->request->input('storage_region');
+            $file->storage_path = '';
+
+            $file->file_hash = '';
+
+            if($file->save()) {
                 return response()->json([
                     'success' => true,
-                    'folder' => $folder->toArray()
+                    'file' => $file->toArray()
                 ]);
             } else {
                 $validator->getMessageBag()->add('general', 'Failed to save record.');
@@ -84,19 +112,19 @@ class FolderController extends Controller
          * @var $validator Validator
          */
         $validator = app()->make('validator')->make($this->request->input(), [
-            'parent_folder_id' => 'exists:Folders,id',
             'name' => 'required|min:2',
             'description' => 'min:2',
         ]);
 
         if($validator->passes()) {
-            $folder = Folder::findOrFail($id);
-            $folder->fill($this->request->input());
+            $file = new File();
+            $file->fill($this->request->input());
 
-            if($folder->save()) {
+
+            if($file->save()) {
                 return response()->json([
                     'success' => true,
-                    'folder' => $folder->toArray()
+                    'file' => $file->toArray()
                 ]);
             } else {
                 $validator->getMessageBag()->add('general', 'Failed to save record.');
@@ -112,11 +140,11 @@ class FolderController extends Controller
     public function delete($id)
     {
         /**
-         * @var Folder $folder
+         * @var File $file
          */
-        $folder = Folder::findOrFail($id);
+        $file = File::findOrFail($id);
 
-        if($folder->delete()) {
+        if($file->delete()) {
             return response()->json([
                 'success' => true,
             ]);

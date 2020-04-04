@@ -8,8 +8,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static find(int|string $id)
  * @method static create(array $array)
  * @method static findOrFail(array $array)
- * @method toArray:array
- * @method delete:bool
+ * @method static where(string $column, string $operator = null, string $value = null)
+ * @method get
+ * @method toArray
+ * @method delete
  */
 class BaseModel extends Model
 {

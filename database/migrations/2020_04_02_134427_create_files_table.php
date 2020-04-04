@@ -27,6 +27,8 @@ class CreateFilesTable extends Migration
             $table->char('storage_region', 255);
             $table->text('storage_path');
 
+            $table->text('file_hash')->nullable();
+
             // Audit columns.
             $table->bigInteger('last_accessed_by')->nullable();
             $table->timestamp('last_accessed_at')->nullable();

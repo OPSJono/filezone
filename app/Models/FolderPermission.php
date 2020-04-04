@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class FolderPermission extends BaseModel
 {
+    use SoftDeletes;
+
     /**
      * @var bool
      */

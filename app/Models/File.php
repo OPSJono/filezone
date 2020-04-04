@@ -2,8 +2,27 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+/**
+ * @property int folder_id
+ * @property string name
+ * @property string description
+ * @property string extension
+ * @property string type
+ * @property int size
+ * @property string storage_method
+ * @property string storage_region
+ * @property string storage_path
+ * @property string file_hash
+ *
+ * Class File
+ * @package App\Models
+ */
 class File extends BaseModel
 {
+    use SoftDeletes;
+
     /**
      * @var bool
      */
@@ -15,15 +34,8 @@ class File extends BaseModel
      * @var array
      */
     protected $fillable = [
-        'folder_id',
         'name',
         'description',
-        'type',
-        'size',
-
-        'storage_method',
-        'storage_region',
-        'storage_path',
     ];
 
     public function folder()

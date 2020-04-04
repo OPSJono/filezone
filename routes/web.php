@@ -52,4 +52,12 @@ $router->group(['middleware' => 'auth', 'prefix' => 'v1'], function () use ($rou
         $router->post('{id}/update', ['uses' => 'FolderController@update']);
         $router->post('{id}/delete', ['uses' => 'FolderController@delete']);
     });
+
+    // Endpoints for Files in a Folder.
+    $router->group(['prefix' => 'files'], function () use ($router) {
+        $router->get('/', ['uses' => 'FileController@index']);
+        $router->post('create', ['uses' => 'FileController@create']);
+        $router->post('{id}/update', ['uses' => 'FileController@update']);
+        $router->post('{id}/delete', ['uses' => 'FileController@delete']);
+    });
 });
