@@ -13,6 +13,12 @@ use Illuminate\Support\Collection;
 use Laravel\Lumen\Auth\Authorizable;
 use Laravel\Passport\HasApiTokens;
 
+/**
+ * @property int id
+ *
+ * Class User
+ * @package App\Models
+ */
 class User extends BaseModel implements AuthenticatableContract, AuthorizableContract
 {
     use SoftDeletes, HasApiTokens, Authenticatable, Authorizable;

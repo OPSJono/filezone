@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\File;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -34,7 +36,7 @@ class FileController extends Controller
          * @var $validator Validator
          */
         $validator = app()->make('validator')->make($this->request->input(), [
-            'folder_id' => 'required|exists:Folders,id',
+            'folder_id' => 'required|exists:folders,id',
         ]);
 
         /**
@@ -63,15 +65,36 @@ class FileController extends Controller
 
     }
 
+    public function view($id)
+    {
+        /**
+         * @var File $file
+         */
+        $file = File::findOrFail($id);
+
+        $file->last_accessed_by = User::currentUser()->id;
+        $file->last_accessed_at = Carbon::now();
+
+        $file->save();
+
+        return response()->json([
+            'success' => true,
+            'file' => $file->toArray()
+        ]);
+    }
+
     public function create()
     {
         /**
          * @var $validator Validator
          */
         $validator = app()->make('validator')->make($this->request->input(), [
-            'file' => 'required_without:file_b64|file',
-            'file_b64' => 'required_without:file|string',
-            'folder_id' => 'required|exists:Folders,id',
+            'file' => 'file',
+            'file_b64' => 'string',
+            'extension' => 'required_with:file_b64',
+            'mimetype' => 'required_with:file_b64',
+            'size' => 'required_with:file_b64',
+            'folder_id' => 'required|exists:folders,id',
             'name' => 'required|min:5',
             'description' => 'min:5',
 //            'storage_region' => 'required',
@@ -96,7 +119,7 @@ class FileController extends Controller
             $file->storage_region = 'uploads';
             $file->storage_path = $fileData->path_to_file;
 
-            $file->file_hash = '';
+            $file->file_hash = $fileData->file_hash;
 
             if($file->save()) {
                 return response()->json([
@@ -125,7 +148,10 @@ class FileController extends Controller
         ]);
 
         if($validator->passes()) {
-            $file = new File();
+            /**
+             * @var $file File
+             */
+            $file = File::findOrFail($id);
             $file->fill($this->request->input());
 
 
@@ -163,6 +189,20 @@ class FileController extends Controller
             'errors' => [
                 'general' => 'Failed to delete record'
             ]
+        ]);
+    }
+
+    public function download($id)
+    {
+        /**
+         * @var File $file
+         */
+        $file = File::findOrFail($id);
+
+        // TODO: Actually download file from disk, with correct headers etc...
+        return response()->json([
+            'success' => true,
+            'file' => $file->toArray()
         ]);
     }
 
@@ -243,7 +283,7 @@ class FileController extends Controller
                 'name_on_disk' => $name_on_disk,
                 'path_to_file' => $folderPath.$name_on_disk,
                 'thumbnail' => $thumbnail,
-                'hash' => $fileHash,
+                'file_hash' => $fileHash,
             ];
         } catch (\Throwable $e) {
             if($tempFilePath !== false && file_exists($tempFilePath)) {

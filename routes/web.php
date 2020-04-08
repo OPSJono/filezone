@@ -49,6 +49,7 @@ $router->group(['middleware' => 'auth', 'prefix' => 'v1'], function () use ($rou
     $router->group(['prefix' => 'folders'], function () use ($router) {
         $router->get('/', ['uses' => 'FolderController@index']);
         $router->post('create', ['uses' => 'FolderController@create']);
+        $router->get('{id}/view', ['uses' => 'FolderController@view']);
         $router->post('{id}/update', ['uses' => 'FolderController@update']);
         $router->post('{id}/delete', ['uses' => 'FolderController@delete']);
     });
@@ -57,7 +58,10 @@ $router->group(['middleware' => 'auth', 'prefix' => 'v1'], function () use ($rou
     $router->group(['prefix' => 'files'], function () use ($router) {
         $router->get('/', ['uses' => 'FileController@index']);
         $router->post('create', ['uses' => 'FileController@create']);
+        $router->get('{id}/view', ['uses' => 'FileController@view']);
         $router->post('{id}/update', ['uses' => 'FileController@update']);
         $router->post('{id}/delete', ['uses' => 'FileController@delete']);
+
+        $router->get('{id}/download', ['uses' => 'FileController@download']);
     });
 });

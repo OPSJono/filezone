@@ -47,7 +47,7 @@ class CreateFilesTable extends Migration
             $table->index('name');
             $table->index('description');
             $table->index('extension');
-            $table->index('type');
+            $table->index('mimetype');
             $table->index('created_by');
         });
     }

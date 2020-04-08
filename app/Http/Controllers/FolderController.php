@@ -47,13 +47,29 @@ class FolderController extends Controller
         ]);
     }
 
+    public function view($id)
+    {
+        /**
+         * @var $folders Folder
+         */
+        $folders = Folder::with([
+            'childFolders',
+            'files'
+        ])->findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'folders' => $folders
+        ]);
+    }
+
     public function create()
     {
         /**
          * @var $validator Validator
          */
         $validator = app()->make('validator')->make($this->request->input(), [
-            'parent_folder_id' => 'exists:Folders,id',
+            'parent_folder_id' => 'exists:folders,id',
             'name' => 'required|min:2',
             'description' => 'min:2',
         ]);
@@ -84,7 +100,7 @@ class FolderController extends Controller
          * @var $validator Validator
          */
         $validator = app()->make('validator')->make($this->request->input(), [
-            'parent_folder_id' => 'exists:Folders,id',
+            'parent_folder_id' => 'exists:folders,id',
             'name' => 'required|min:2',
             'description' => 'min:2',
         ]);

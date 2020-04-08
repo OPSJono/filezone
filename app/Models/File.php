@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string storage_region
  * @property string storage_path
  * @property string file_hash
+ * @property int last_accessed_by
+ * @property string last_accessed_at
  *
  * Class File
  * @package App\Models
