@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use RuntimeException;
 
@@ -220,8 +221,9 @@ class FileController extends Controller
             $folderString = explode('-',$guid)[0];
             $folderPrefixes = str_split($folderString, 2);
             $baseFolder = storage_path('uploads');
-            $folderPath = $baseFolder.'/'.implode('/', $folderPrefixes).'/';
-            $thumbnailPath = 'thumbnail/'.$folderPath.'/';
+            $specificPath = implode('/', $folderPrefixes).'/';
+            $folderPath = $baseFolder.'/'.$specificPath;
+            $thumbnailPath = $baseFolder.'/thumbnail/'.$specificPath.'/';
 
             $name_on_disk = $guid;
             $ext = null;
@@ -266,7 +268,7 @@ class FileController extends Controller
             }
 
             // Attempt to create a thumbnail for the file
-            $thumbnail = $this->makeThumbnail($folderPath.$name_on_disk, $thumbnailPath.$name_on_disk);
+            $thumbnail = $this->makeThumbnail($folderPath.$name_on_disk, $thumbnailPath, $name_on_disk);
 
             if($thumbnail == true) {
                 $thumbnail = $thumbnailPath.$name_on_disk;
@@ -300,7 +302,8 @@ class FileController extends Controller
      * @author Jonathan Marshall
      *
      * @param $filepath string path to the original image
-     * @param $thumbpath string path to where the thumbnail should be saved
+     * @param $thumbpath string path to where the folder where the thumbnail should be saved
+     * @param $filename string name of the thumbnail to be saved in $thumbpath
      * @param $thumbnail_width int width of thumbnail image
      * @param $thumbnail_height int height of thumbnail image
      * @param $background string|array|bool background of the thumbnail
@@ -311,11 +314,15 @@ class FileController extends Controller
      * Also to unlink the thumbnail if it already exists before trying to create it.
      * And to abort early on if the file passed isn't an image. (has a width|height of 0)
      * */
-    private function makeThumbnail($filepath, $thumbpath, $thumbnail_width = 80, $thumbnail_height = 80, $background = 'transparent')
+    private function makeThumbnail($filepath, $thumbpath, $filename, $thumbnail_width = 80, $thumbnail_height = 80, $background = 'transparent')
     {
         try {
-            if (is_file($thumbpath)) {
-                unlink($thumbpath);
+            if (is_file($thumbpath.$filename)) {
+                unlink($thumbpath.$filename);
+            }
+
+            if(!is_dir($thumbpath)) {
+                mkdir($thumbpath, 0775, true);
             }
 
             list($original_width, $original_height, $original_type) = getimagesize($filepath);
@@ -361,7 +368,7 @@ class FileController extends Controller
             }
 
             imagecopyresampled($new_image, $old_image, $dest_x, $dest_y, 0, 0, $new_width, $new_height, $original_width, $original_height);
-            $imgt($new_image, $thumbpath);
+            $imgt($new_image, $thumbpath.$filename);
         } catch (\Exception $e) {
             Log::error('FileUploadServer::makeThumbnail failed', [
                 'error' => $e->getMessage(),
@@ -370,6 +377,6 @@ class FileController extends Controller
             return false;
         }
 
-        return file_exists($thumbpath);
+        return file_exists($thumbpath.$filename);
     }
 }
