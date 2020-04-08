@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
+ * @property string guid
  * @property int folder_id
  * @property string name
  * @property string description
  * @property string extension
- * @property string type
+ * @property string mimetype
  * @property int size
  * @property string storage_method
  * @property string storage_region

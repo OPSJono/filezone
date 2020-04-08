@@ -6,6 +6,7 @@
     "type": "project",
     "require": {
         "php": "^7.4",
+        "ext-gd": "*",
         "ext-json": "*",
         "ext-openssl": "*",
         "dusterio/lumen-passport": "^0.2.18",

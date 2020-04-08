@@ -15,11 +15,12 @@ class CreateFilesTable extends Migration
     {
         Schema::create('files', function (Blueprint $table) {
             $table->id();
+            $table->char('guid', '36');
             $table->bigInteger('folder_id');
             $table->char('name', 255);
             $table->char('description', 255)->nullable();
             $table->char('extension', 255);
-            $table->char('type', 255);
+            $table->char('mimetype', 255);
             $table->integer('size');
 
             // File storage info
@@ -42,6 +43,7 @@ class CreateFilesTable extends Migration
             $table->softDeletes();
 
             // Indexes
+            $table->index('guid');
             $table->index('name');
             $table->index('description');
             $table->index('extension');
