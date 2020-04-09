@@ -14,8 +14,6 @@ class UserLoginTest extends BaseOauth
 
         $content = json_decode($response->getContent(), true);
 
-        dd($content, $response->getStatusCode());
-
         $this->assertEquals(200, $response->getStatusCode());
 
         $this->assertTrue(array_key_exists('token_type', $content));

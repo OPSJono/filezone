@@ -35,7 +35,6 @@ class UserRegistrationTest extends BaseOauth
      */
     public function testFailureToRegisterANewUserUsingInvalidInformation()
     {
-        // A
         $response = $this->call('POST', '/v1/oauth/register', [
             'first_name' => '',
             'middle_name' => '',
