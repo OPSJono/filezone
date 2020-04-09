@@ -10,12 +10,11 @@ class UserLoginTest extends BaseOauth
      */
     public function testUserCanLoginWithValidCredentials()
     {
-        $this->insertValidPasswordClient();
-        $this->insertValidUser();
-
         $response = $this->loginWithValidUser();
 
         $content = json_decode($response->getContent(), true);
+
+        dd($content, $response->getStatusCode());
 
         $this->assertEquals(200, $response->getStatusCode());
 
@@ -33,9 +32,6 @@ class UserLoginTest extends BaseOauth
      */
     public function testUserFailsLoginWithInvalidCredentials()
     {
-        $this->insertValidPasswordClient();
-        $this->insertValidUser();
-
         $response = $this->asGuest('POST', '/v1/oauth/token', [
             'grant_type' => 'password',
             'client_id' => $this->client_id,

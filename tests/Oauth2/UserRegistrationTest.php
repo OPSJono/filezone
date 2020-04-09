@@ -11,7 +11,14 @@ class UserRegistrationTest extends BaseOauth
      */
     public function testRegisterANewUserWithValidInformation()
     {
-        $response = $this->insertValidUser();
+        $response = $this->asGuest('POST', '/v1/oauth/register', [
+            'first_name' => 'Unit',
+            'middle_name' => 'Absolute',
+            'last_name' => 'Testing',
+            'email' => 'unit@test.com',
+            'password' => $this->password,
+            'password_confirmation' => $this->password,
+        ]);
 
         $content = json_decode($response->getContent(), true);
 
@@ -28,8 +35,6 @@ class UserRegistrationTest extends BaseOauth
      */
     public function testFailureToRegisterANewUserUsingInvalidInformation()
     {
-        $this->insertValidUser();
-
         // A
         $response = $this->call('POST', '/v1/oauth/register', [
             'first_name' => '',
@@ -44,7 +49,7 @@ class UserRegistrationTest extends BaseOauth
             'first_name' => 'Jon',
             'middle_name' => '',
             'last_name' => '',
-            'email' => 'unit@test.com',
+            'email' => $this->username,
             'password' => 'password',
             'password_confirmation' => 'wrong_password',
         ]);

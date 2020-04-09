@@ -6,38 +6,11 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 class BaseOauth extends TestCase
 {
 
-    protected int $client_id = 10000;
-    protected string $client_secret = '';
-    protected string $token_name = 'Unit Testing Password Token';
-    protected string $username = 'unit@test.com';
+    protected int $client_id = 2;
+    protected string $client_secret = 'k2useT2XqbCWwLOdSg1kngBFdXao7ukrWY05ot20';
+    protected $token_name = null;
+    protected string $username = 'jonathan@marshalltech.co.uk';
     protected string $password = 'password';
-
-    protected function insertValidPasswordClient()
-    {
-        app()->make('db')->table('oauth_clients')->insert([
-            'id' => $this->client_id,
-            'user_id' => null,
-            'name' => $this->token_name,
-            'secret' => $this->client_secret,
-            'redirect' => '/',
-            'personal_access_client' => 0,
-            'password_client' => 1,
-            'revoked' => 0,
-        ]);
-    }
-
-    protected function insertValidUser()
-    {
-        return $this->asGuest('POST', '/v1/oauth/register', [
-            'id' => 10000,
-            'first_name' => 'Unit',
-            'middle_name' => 'Absolute',
-            'last_name' => 'Testing',
-            'email' => $this->username,
-            'password' => $this->password,
-            'password_confirmation' => $this->password,
-        ]);
-    }
 
     protected function loginWithValidUser()
     {
@@ -47,7 +20,8 @@ class BaseOauth extends TestCase
             'client_secret' => $this->client_secret,
             'username' => $this->username,
             'password' => $this->password,
-            'scope' => '',
+            'scope' => '*',
+            'redirect_uri' => 'http://localhost/'
         ]);
     }
 }
