@@ -200,9 +200,23 @@ class FileController extends Controller
          */
         $file = File::findOrFail($id);
 
-        // TODO: Actually download file from disk, with correct headers etc...
+        if (is_file($file->storage_path)) {
+            $headers = [
+                'Content-Type' => $file->mimetype,
+                'ResponseContentDisposition' => 'attachment; filename="' . $file->download_name .'"',
+            ];
+
+            return response()->download($file->storage_path, $file->download_name, $headers)->deleteFileAfterSend(false);
+        }
+
         return response()->json([
-            'success' => true,
+            'success' => false,
+            'errors' => [
+                'file' => [
+                    'The file does not exist on disk',
+                    'Expected file at: '.$file->storage_path
+                ]
+            ],
             'file' => $file->toArray()
         ]);
     }

@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int last_accessed_by
  * @property string last_accessed_at
  *
+ * @property string download_name
+ *
  * Class File
  * @package App\Models
  */
@@ -49,5 +51,10 @@ class File extends BaseModel
     public function permissions()
     {
         return $this->hasMany(FilePermission::class, 'file_id', 'id');
+    }
+
+    public function getDownloadNameAttribute()
+    {
+        return $this->name .'.'. $this->extension;
     }
 }
