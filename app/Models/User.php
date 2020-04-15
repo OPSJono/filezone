@@ -12,9 +12,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Laravel\Lumen\Auth\Authorizable;
 use Laravel\Passport\HasApiTokens;
+use phpDocumentor\Reflection\Types\Boolean;
 
 /**
  * @property int id
+ * @property Boolean superuser
  *
  * Class User
  * @package App\Models
@@ -47,13 +49,6 @@ class User extends BaseModel implements AuthenticatableContract, AuthorizableCon
      */
     protected $hidden = [
         'password',
-    ];
-
-    /**
-     * @var array
-     */
-    protected $appends = [
-        'passport_token'
     ];
 
     public static function currentUser(): User
@@ -95,14 +90,11 @@ class User extends BaseModel implements AuthenticatableContract, AuthorizableCon
         return parent::can($ability, $arguments = []);
     }
 
-    public function getPassportTokenAttribute()
-    {
-        return $this->token();
-    }
-
     public function setPassword(string $password): void
     {
-        $this->password = app()->make('hash')->make($password);
+        if(!empty($password)) {
+            $this->password = app()->make('hash')->make($password);
+        }
     }
 
     public function invalidateAllTokens(): void

@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @method static find(int|string $id)
+ * @method static findOrFail(int $id)
  * @method static create(array $array)
- * @method static findOrFail(array $array)
  * @method static where(string $column, string $operator = null, string $value = null)
  * @method get
  * @method toArray

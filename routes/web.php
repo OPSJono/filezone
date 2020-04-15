@@ -14,6 +14,7 @@
  * @var $router Router;
  */
 
+use App\Http\Middleware\SuperUserMiddleware;
 use App\Models\User;
 use Laravel\Lumen\Routing\Router;
 
@@ -43,6 +44,21 @@ $router->group(['middleware' => 'auth', 'prefix' => 'v1'], function () use ($rou
             'version' => $router->app->version(),
             'user' => User::currentUser(),
         ]);
+    });
+
+    // Endpoints for User Profile.
+    $router->group(['prefix' => 'profile'], function () use ($router) {
+        $router->get('/', ['uses' => 'ProfileController@index']);
+        $router->post('update', ['uses' => 'ProfileController@update']);
+    });
+
+    // Endpoints for Users.
+    $router->group(['prefix' => 'users', 'middleware' => SuperUserMiddleware::class], function () use ($router) {
+        $router->get('/', ['uses' => 'UserController@index']);
+        $router->post('create', ['uses' => 'UserController@create']);
+        $router->get('{id}/view', ['uses' => 'UserController@view']);
+        $router->post('{id}/update', ['uses' => 'UserController@update']);
+        $router->post('{id}/delete', ['uses' => 'UserController@delete']);
     });
 
     // Endpoints for Folders.
