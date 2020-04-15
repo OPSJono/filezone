@@ -16,7 +16,7 @@ class SuperUserMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if($request->user()->superuser === 1) {
+        if($request->user()->superuser == 1) {
             return $next($request);
         }
 
