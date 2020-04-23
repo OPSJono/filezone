@@ -81,10 +81,14 @@ $app->configure('permission');
 // ]);
 
 $app->routeMiddleware([
+    'cors'       => App\Http\Middleware\CorsMiddleware::class,
     'auth'       => App\Http\Middleware\Authenticate::class,
     'permission' => Spatie\Permission\Middlewares\PermissionMiddleware::class,
     'role'       => Spatie\Permission\Middlewares\RoleMiddleware::class,
 ]);
+
+// Register a providor to intercept the OPTIONS requests.
+$app->register(App\Providers\CatchAllOptionsRequestsProvider::class);
 
 // Register two service Oauth2/Passport providers - original one and Lumen adapter
 $app->register(Laravel\Passport\PassportServiceProvider::class);

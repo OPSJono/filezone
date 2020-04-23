@@ -59,7 +59,8 @@ services:
 
 networks:
   default:
-      name: fz-network
+    external:
+      name: filezone
 
 volumes:
   fz-db:
