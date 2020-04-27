@@ -22,7 +22,6 @@ class AuthController extends Controller
     public function __construct(Request $request)
     {
         $this->request = $request;
-        //
     }
 
     public function register()
@@ -57,7 +56,8 @@ class AuthController extends Controller
         return response()->json([
             'success' => false,
             'errors' => $validator->getMessageBag()->toArray()
-        ])->setStatusCode(400);
+        ])->setStatusCode(400)
+            ->header('Access-Control-Allow-Origin', '*', true);
     }
 
     public function logout()
