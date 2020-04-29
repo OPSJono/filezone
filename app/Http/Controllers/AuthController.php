@@ -3,27 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Contracts\Validation\Validator;
 
 class AuthController extends Controller
 {
-
-    /**
-     * @var Request
-     */
-    protected $request;
-
-    /**
-     * Create a new controller instance.
-     *
-     * @param Request $request
-     */
-    public function __construct(Request $request)
-    {
-        $this->request = $request;
-    }
-
     public function register()
     {
         /**
@@ -44,20 +27,17 @@ class AuthController extends Controller
             $user->setPassword($this->request->input('password'));
 
             if($user->save()) {
-                return response()->json([
-                    'success' => true,
-                    'user' => $user->toArray()
-                ]);
+                $this->apiResponse->setSuccess($user);
             } else {
-                $validator->getMessageBag()->add('general', 'Failed to save record.');
+                $this->apiResponse->setGeneralError("Failed to save record.");
             }
+        } else {
+            $this->apiResponse->handleErrors($validator);
         }
 
-        return response()->json([
-            'success' => false,
-            'errors' => $validator->getMessageBag()->toArray()
-        ])->setStatusCode(400)
-            ->header('Access-Control-Allow-Origin', '*', true);
+        $this->apiResponse->setCORS();
+
+        return $this->apiResponse->returnResponse();
     }
 
     public function logout()
@@ -71,10 +51,6 @@ class AuthController extends Controller
             $user->invalidateAllTokens();
         }
 
-        return response()->json([
-            'success' => true
-        ]);
+        return $this->apiResponse->returnResponse();
     }
-
-    //
 }

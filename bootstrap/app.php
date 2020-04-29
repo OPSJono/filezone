@@ -50,6 +50,11 @@ $app->singleton(
     App\Console\Kernel::class
 );
 
+$app->singleton(
+    App\Interfaces\ApiResponseInterface::class,
+    App\Services\ApiResponseService::class
+);
+
 /*
 |--------------------------------------------------------------------------
 | Register Config Files
