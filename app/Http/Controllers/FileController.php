@@ -16,20 +16,6 @@ use RuntimeException;
 
 class FileController extends Controller
 {
-    /**
-     * @var Request
-     */
-    protected Request $request;
-
-    /**
-     * Create a new controller instance.
-     *
-     * @param Request $request
-     */
-    public function __construct(Request $request)
-    {
-        $this->request = $request;
-    }
 
     public function index()
     {
@@ -53,16 +39,12 @@ class FileController extends Controller
              */
             $files = $query->get();
 
-            return response()->json([
-                'success' => true,
-                'files' => $files
-            ]);
+            $this->apiResponse->setSuccess(['files' => $files]);
+        } else {
+            $this->apiResponse->handleErrors($validator);
         }
 
-        return response()->json([
-            'success' => false,
-            'errors' => $validator->getMessageBag()->toArray()
-        ])->setStatusCode(400);
+        return $this->apiResponse->returnResponse();
 
     }
 
@@ -78,10 +60,9 @@ class FileController extends Controller
 
         $file->save();
 
-        return response()->json([
-            'success' => true,
-            'file' => $file->toArray()
-        ]);
+        $this->apiResponse->setSuccess(['file' => $file->toArray()]);
+
+        return $this->apiResponse->returnResponse();
     }
 
     public function create()
@@ -123,19 +104,15 @@ class FileController extends Controller
             $file->file_hash = $fileData->file_hash;
 
             if($file->save()) {
-                return response()->json([
-                    'success' => true,
-                    'file' => $file->toArray()
-                ]);
+                $this->apiResponse->setSuccess(['file' => $file->toArray()]);
             } else {
-                $validator->getMessageBag()->add('general', 'Failed to save record.');
+                $this->apiResponse->setGeneralError('Failed to save record');
             }
+        } else {
+            $this->apiResponse->handleErrors($validator);
         }
 
-        return response()->json([
-            'success' => false,
-            'errors' => $validator->getMessageBag()->toArray()
-        ])->setStatusCode(400);
+        return $this->apiResponse->returnResponse();
     }
 
     public function update($id)
@@ -155,21 +132,16 @@ class FileController extends Controller
             $file = File::findOrFail($id);
             $file->fill($this->request->input());
 
-
             if($file->save()) {
-                return response()->json([
-                    'success' => true,
-                    'file' => $file->toArray()
-                ]);
+                $this->apiResponse->setSuccess(['file' => $file->toArray()]);
             } else {
-                $validator->getMessageBag()->add('general', 'Failed to save record.');
+                $this->apiResponse->setGeneralError('Failed to save record');
             }
+        } else {
+            $this->apiResponse->handleErrors($validator);
         }
 
-        return response()->json([
-            'success' => false,
-            'errors' => $validator->getMessageBag()->toArray()
-        ])->setStatusCode(400);
+        return $this->apiResponse->returnResponse();
     }
 
     public function delete($id)
@@ -179,18 +151,11 @@ class FileController extends Controller
          */
         $file = File::findOrFail($id);
 
-        if($file->delete()) {
-            return response()->json([
-                'success' => true,
-            ]);
+        if(!$file->delete()) {
+            $this->apiResponse->setGeneralError("Failed to delete record.");
         }
 
-        return response()->json([
-            'success' => false,
-            'errors' => [
-                'general' => 'Failed to delete record'
-            ]
-        ]);
+        return $this->apiResponse->returnResponse();
     }
 
     public function download($id)
@@ -209,16 +174,13 @@ class FileController extends Controller
             return response()->download($file->storage_path, $file->download_name, $headers)->deleteFileAfterSend(false);
         }
 
-        return response()->json([
-            'success' => false,
-            'errors' => [
-                'file' => [
-                    'The file does not exist on disk',
-                    'Expected file at: '.$file->storage_path
-                ]
-            ],
-            'file' => $file->toArray()
-        ]);
+        $this->apiResponse->setSuccess(['file' => $file->toArray()]);
+        $this->apiResponse->setErrors(['file' => [
+            'The file does not exist on disk',
+            'Expected file at: '.$file->storage_path
+        ]]);
+
+        return $this->apiResponse->returnResponse();
     }
 
     /**

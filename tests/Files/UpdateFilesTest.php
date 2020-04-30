@@ -21,8 +21,10 @@ class UpdateFilesTest extends TestCase
 
         $this->assertTrue(array_key_exists('success', $content));
         $this->assertTrue($content['success']);
-        $this->assertTrue(array_key_exists('file', $content));
-        $this->assertTrue(is_array($content['file']));
+        $this->assertTrue(array_key_exists('data', $content));
+        $this->assertTrue(is_array($content['data']));
+        $this->assertTrue(array_key_exists('file', $content['data']));
+        $this->assertTrue(is_array($content['data']['file']));
     }
 
     /**

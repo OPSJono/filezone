@@ -10,20 +10,6 @@ use Illuminate\Support\Collection;
 
 class UserController extends Controller
 {
-    /**
-     * @var Request
-     */
-    protected Request $request;
-
-    /**
-     * Create a new controller instance.
-     *
-     * @param Request $request
-     */
-    public function __construct(Request $request)
-    {
-        $this->request = $request;
-    }
 
     public function index()
     {

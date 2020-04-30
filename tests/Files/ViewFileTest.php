@@ -8,7 +8,7 @@ class ViewFileTest extends TestCase
      * @return void
      * @test
      */
-    public function testUserCanListFolders()
+    public function testUserCanViewAFile()
     {
         $response = $this->asSuperUser('GET', '/v1/files/1/view');
         $content = json_decode($response->getContent(), true);
@@ -18,8 +18,10 @@ class ViewFileTest extends TestCase
 
         $this->assertTrue(array_key_exists('success', $content));
         $this->assertTrue($content['success']);
-        $this->assertTrue(array_key_exists('file', $content));
-        $this->assertTrue(is_array($content['file']));
+        $this->assertTrue(array_key_exists('data', $content));
+        $this->assertTrue(is_array($content['data']));
+        $this->assertTrue(array_key_exists('file', $content['data']));
+        $this->assertTrue(is_array($content['data']['file']));
     }
 
     /**

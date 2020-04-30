@@ -116,7 +116,8 @@ class ApiResponseService implements ApiResponseInterface
         if($this->hasErrors()) {
             $response = $response->json([
                 'success' => false,
-                'errors' => $this->errors
+                'errors' => $this->errors,
+                'data' => $this->success,
             ]);
         } else {
             $response = $response->json([
