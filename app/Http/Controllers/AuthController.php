@@ -35,8 +35,6 @@ class AuthController extends Controller
             $this->apiResponse->handleErrors($validator);
         }
 
-        $this->apiResponse->setCORS();
-
         return $this->apiResponse->returnResponse();
     }
 

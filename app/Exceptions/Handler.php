@@ -7,6 +7,7 @@ use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
+use League\OAuth2\Server\Exception\OAuthServerException;
 use \Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -28,6 +29,7 @@ class Handler extends ExceptionHandler
         HttpException::class,
         ModelNotFoundException::class,
         ValidationException::class,
+        OAuthServerException::class, // invalid tokens
     ];
 
     /**

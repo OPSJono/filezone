@@ -21,6 +21,18 @@ use Laravel\Lumen\Routing\Router;
 use Illuminate\Http\Request;
 use Dusterio\LumenPassport\LumenPassport;
 
+$router->options(
+    '/{any:.*}',
+    [
+        'middleware' => ['cors'],
+        function (){
+            return response(['success' => true])
+                ->header('Access-Control-Allow-Origin', '*', true)
+            ;
+        }
+    ]
+);
+
 $router->group(['middleware' => 'cors'], function() use ($router) {
     // App root.
     $router->get('/', function (Request $request) use ($router) {
