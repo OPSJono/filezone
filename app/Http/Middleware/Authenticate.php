@@ -37,10 +37,7 @@ class Authenticate
     public function handle($request, Closure $next, $guard = null)
     {
         if ($this->auth->guard($guard)->guest()) {
-            return response()->json('Unauthorized.')->setStatusCode(401)
-                ->header('Access-Control-Allow-Methods', 'HEAD, GET, POST, PUT, PATCH, DELETE', true)
-                ->header('Access-Control-Allow-Headers', $request->header('Access-Control-Request-Headers'), true)
-                ->header('Access-Control-Allow-Origin', '*', true);
+            return response()->json('Unauthorized.')->setStatusCode(401);
         }
 
         return $next($request);
