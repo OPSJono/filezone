@@ -15,10 +15,9 @@ class UserController extends Controller
     {
         $users = User::query()->paginate(10);
 
-        return response()->json([
-            'success' => true,
-            'users' => $users
-        ]);
+        $this->apiResponse->setSuccess(['users' => $users]);
+
+        return $this->apiResponse->returnResponse();
     }
 
     public function view($id)
@@ -30,10 +29,9 @@ class UserController extends Controller
             'folders',
         ])->findOrFail($id);
 
-        return response()->json([
-            'success' => true,
-            'user' => $user
-        ]);
+        $this->apiResponse->setSuccess(['user' => $user]);
+
+        return $this->apiResponse->returnResponse();
     }
 
     public function create()
@@ -56,19 +54,15 @@ class UserController extends Controller
             $user->setPassword($this->request->input('password'));
 
             if($user->save()) {
-                return response()->json([
-                    'success' => true,
-                    'user' => $user->toArray()
-                ]);
+                $this->apiResponse->setSuccess(['user' => $user->toArray()]);
             } else {
-                $validator->getMessageBag()->add('general', 'Failed to save record.');
+                $this->apiResponse->setGeneralError('Failed to save record');
             }
+        } else {
+            $this->apiResponse->handleErrors($validator);
         }
 
-        return response()->json([
-            'success' => false,
-            'errors' => $validator->getMessageBag()->toArray()
-        ])->setStatusCode(400);
+        return $this->apiResponse->returnResponse();
     }
 
     public function update($id)
@@ -94,19 +88,15 @@ class UserController extends Controller
             $user->setPassword($this->request->input('password'));
 
             if($user->save()) {
-                return response()->json([
-                    'success' => true,
-                    'user' => $user->toArray()
-                ]);
+                $this->apiResponse->setSuccess(['user' => $user->toArray()]);
             } else {
-                $validator->getMessageBag()->add('general', 'Failed to save record.');
+                $this->apiResponse->setGeneralError('Failed to save record');
             }
+        } else {
+            $this->apiResponse->handleErrors($validator);
         }
 
-        return response()->json([
-            'success' => false,
-            'errors' => $validator->getMessageBag()->toArray()
-        ])->setStatusCode(400);
+        return $this->apiResponse->returnResponse();
     }
 
     public function delete($id)
@@ -117,25 +107,13 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         if($user->superuser) {
-            return response()->json([
-                'success' => false,
-                'errors' => [
-                    'general' => 'A superuser cannot be deleted.'
-                ]
-            ]);
+            $this->apiResponse->setGeneralError('A Superuser cannot be deleted');
         }
 
-        if($user->delete()) {
-            return response()->json([
-                'success' => true,
-            ]);
+        if(!$user->delete()) {
+            $this->apiResponse->setGeneralError('Failed to delete record');
         }
 
-        return response()->json([
-            'success' => false,
-            'errors' => [
-                'general' => 'Failed to delete record'
-            ]
-        ]);
+        return $this->apiResponse->returnResponse();
     }
 }

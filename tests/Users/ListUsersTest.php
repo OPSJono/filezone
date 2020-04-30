@@ -18,8 +18,10 @@ class ListUsersTest extends TestCase
 
         $this->assertTrue(array_key_exists('success', $content));
         $this->assertTrue($content['success']);
-        $this->assertTrue(array_key_exists('users', $content));
-        $this->assertTrue(is_array($content['users']));
+        $this->assertTrue(array_key_exists('data', $content));
+        $this->assertTrue(is_array($content['data']));
+        $this->assertTrue(array_key_exists('users', $content['data']));
+        $this->assertTrue(is_array($content['data']['users']));
     }
 
     /**
@@ -38,8 +40,10 @@ class ListUsersTest extends TestCase
 
         $this->assertTrue(array_key_exists('success', $content));
         $this->assertTrue($content['success']);
-        $this->assertTrue(array_key_exists('user', $content));
-        $this->assertTrue(is_array($content['user']));
+        $this->assertTrue(array_key_exists('data', $content));
+        $this->assertTrue(is_array($content['data']));
+        $this->assertTrue(array_key_exists('user', $content['data']));
+        $this->assertTrue(is_array($content['data']['user']));
     }
 
     /**

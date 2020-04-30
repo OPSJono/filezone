@@ -20,10 +20,9 @@ class ProfileController extends Controller
             'folders',
         ]);
 
-        return response()->json([
-            'success' => true,
-            'user' => $user
-        ]);
+        $this->apiResponse->setSuccess(['user' => $user]);
+
+        return $this->apiResponse->returnResponse();
     }
 
     public function update()
@@ -49,18 +48,14 @@ class ProfileController extends Controller
             $user->setPassword($this->request->input('password'));
 
             if($user->save()) {
-                return response()->json([
-                    'success' => true,
-                    'user' => $user->toArray()
-                ]);
+                $this->apiResponse->setSuccess(['user' => $user->toArray()]);
             } else {
-                $validator->getMessageBag()->add('general', 'Failed to save record.');
+                $this->apiResponse->setGeneralError('Failed to save record');
             }
+        } else {
+            $this->apiResponse->handleErrors($validator);
         }
 
-        return response()->json([
-            'success' => false,
-            'errors' => $validator->getMessageBag()->toArray()
-        ])->setStatusCode(400);
+        return $this->apiResponse->returnResponse();
     }
 }
