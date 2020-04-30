@@ -22,8 +22,10 @@ class UpdateFoldersTest extends TestCase
 
         $this->assertTrue(array_key_exists('success', $content));
         $this->assertTrue($content['success']);
-        $this->assertTrue(array_key_exists('folder', $content));
-        $this->assertTrue(is_array($content['folder']));
+        $this->assertTrue(array_key_exists('data', $content));
+        $this->assertTrue(is_array($content['data']));
+        $this->assertTrue(array_key_exists('folder', $content['data']));
+        $this->assertTrue(is_array($content['data']['folder']));
     }
 
     /**
@@ -48,7 +50,6 @@ class UpdateFoldersTest extends TestCase
         $this->assertFalse($content['success']);
         $this->assertTrue(array_key_exists('errors', $content));
         $this->assertTrue(is_array($content['errors']));
-
 
         $this->assertTrue(isset($content['errors']['parent_folder_id'][0]));
         $this->assertTrue($content['errors']['parent_folder_id'][0] == 'The selected parent folder id is invalid.');

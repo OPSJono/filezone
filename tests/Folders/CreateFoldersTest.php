@@ -22,8 +22,10 @@ class CreateFoldersTest extends TestCase
 
         $this->assertTrue(array_key_exists('success', $content));
         $this->assertTrue($content['success']);
-        $this->assertTrue(array_key_exists('folder', $content));
-        $this->assertTrue(is_array($content['folder']));
+        $this->assertTrue(array_key_exists('data', $content));
+        $this->assertTrue(is_array($content['data']));
+        $this->assertTrue(array_key_exists('folder', $content['data']));
+        $this->assertTrue(is_array($content['data']['folder']));
     }
 
     /**

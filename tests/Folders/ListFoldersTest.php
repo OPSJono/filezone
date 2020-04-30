@@ -18,8 +18,10 @@ class ListFoldersTest extends TestCase
 
         $this->assertTrue(array_key_exists('success', $content));
         $this->assertTrue($content['success']);
-        $this->assertTrue(array_key_exists('folders', $content));
-        $this->assertTrue(is_array($content['folders']));
+        $this->assertTrue(array_key_exists('data', $content));
+        $this->assertTrue(is_array($content['data']));
+        $this->assertTrue(array_key_exists('folders', $content['data']));
+        $this->assertTrue(is_array($content['data']['folders']));
     }
 
     /**
@@ -38,7 +40,9 @@ class ListFoldersTest extends TestCase
 
         $this->assertTrue(array_key_exists('success', $content));
         $this->assertTrue($content['success']);
-        $this->assertTrue(array_key_exists('folders', $content));
-        $this->assertTrue(is_array($content['folders']));
+        $this->assertTrue(array_key_exists('data', $content));
+        $this->assertTrue(is_array($content['data']));
+        $this->assertTrue(array_key_exists('folders', $content['data']));
+        $this->assertTrue(is_array($content['data']['folders']));
     }
 }

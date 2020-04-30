@@ -27,10 +27,9 @@ class FolderController extends Controller
          */
         $folders = $user->listOwnedFolders();
 
-        return response()->json([
-            'success' => true,
-            'folders' => $folders
-        ]);
+        $this->apiResponse->setSuccess(['folders' => $folders]);
+
+        return $this->apiResponse->returnResponse();
     }
 
     public function view($id)
@@ -43,10 +42,9 @@ class FolderController extends Controller
             'files'
         ])->findOrFail($id);
 
-        return response()->json([
-            'success' => true,
-            'folders' => $folders
-        ]);
+        $this->apiResponse->setSuccess(['folders' => $folders]);
+
+        return $this->apiResponse->returnResponse();
     }
 
     public function create()
@@ -65,19 +63,15 @@ class FolderController extends Controller
             $folder->fill($this->request->input());
 
             if($folder->save()) {
-                return response()->json([
-                    'success' => true,
-                    'folder' => $folder->toArray()
-                ]);
+                $this->apiResponse->setSuccess(['folder' => $folder->toArray()]);
             } else {
-                $validator->getMessageBag()->add('general', 'Failed to save record.');
+                $this->apiResponse->setGeneralError('Failed to save record');
             }
+        } else {
+            $this->apiResponse->handleErrors($validator);
         }
 
-        return response()->json([
-            'success' => false,
-            'errors' => $validator->getMessageBag()->toArray()
-        ])->setStatusCode(400);
+        return $this->apiResponse->returnResponse();
     }
 
     public function update($id)
@@ -96,19 +90,15 @@ class FolderController extends Controller
             $folder->fill($this->request->input());
 
             if($folder->save()) {
-                return response()->json([
-                    'success' => true,
-                    'folder' => $folder->toArray()
-                ]);
+                $this->apiResponse->setSuccess(['folder' => $folder->toArray()]);
             } else {
-                $validator->getMessageBag()->add('general', 'Failed to save record.');
+                $this->apiResponse->setGeneralError('Failed to save record');
             }
+        } else {
+            $this->apiResponse->handleErrors($validator);
         }
 
-        return response()->json([
-            'success' => false,
-            'errors' => $validator->getMessageBag()->toArray()
-        ])->setStatusCode(400);
+        return $this->apiResponse->returnResponse();
     }
 
     public function delete($id)
@@ -118,17 +108,10 @@ class FolderController extends Controller
          */
         $folder = Folder::findOrFail($id);
 
-        if($folder->delete()) {
-            return response()->json([
-                'success' => true,
-            ]);
+        if(!$folder->delete()) {
+            $this->apiResponse->setGeneralError('Failed to delete record.');
         }
 
-        return response()->json([
-            'success' => false,
-            'errors' => [
-                'general' => 'Failed to delete record'
-            ]
-        ]);
+        return $this->apiResponse->returnResponse();
     }
 }
