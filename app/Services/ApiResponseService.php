@@ -27,11 +27,6 @@ class ApiResponseService implements ApiResponseInterface
 
     }
 
-    public function setCORS() : void
-    {
-        $this->addHeaders(['Access-Control-Allow-Origin' => '*']);
-    }
-
     public function hasHeaders() : bool
     {
         return !empty($this->headers);

@@ -6,7 +6,6 @@ use Illuminate\Http\JsonResponse;
 
 interface ApiResponseInterface {
     function addHeaders(array $headers = []) : void;
-    function setCORS() : void;
     function hasHeaders() : bool;
     function setResponseCode(int $code = 200) : void;
     function hasErrors() : bool;
