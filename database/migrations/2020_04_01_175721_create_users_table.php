@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
             $table->text('email');
             $table->boolean('superuser')->default(0);
             $table->text('password');
+            $table->timestamp('email_verified_at')->nullable();
 
             $table->bigInteger('created_by')->nullable();
             $table->bigInteger('updated_by')->nullable();

@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Redis\RedisServiceProvider;
-
 require_once __DIR__.'/../vendor/autoload.php';
 
 (new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
@@ -68,7 +66,10 @@ $app->singleton(
 
 $app->configure('app');
 $app->configure('auth');
+$app->configure('logging');
+$app->configure('mail');
 $app->configure('permission');
+$app->configure('server');
 
 /*
 |--------------------------------------------------------------------------
@@ -88,6 +89,7 @@ $app->middleware([
 $app->routeMiddleware([
     'cors'       => App\Http\Middleware\CorsMiddleware::class,
     'auth'       => App\Http\Middleware\Authenticate::class,
+    'signed'     => App\Http\Middleware\ValidateSignature::class,
     'permission' => Spatie\Permission\Middlewares\PermissionMiddleware::class,
     'role'       => Spatie\Permission\Middlewares\RoleMiddleware::class,
 ]);
@@ -98,6 +100,7 @@ $app->register(App\Providers\CatchAllOptionsRequestsProvider::class);
 // Register two service Oauth2/Passport providers - original one and Lumen adapter
 $app->register(Laravel\Passport\PassportServiceProvider::class);
 $app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
+$app->register(Illuminate\Notifications\NotificationServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -113,7 +116,8 @@ $app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
 
 $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
-$app->register(RedisServiceProvider::class);
+$app->register(Illuminate\Mail\MailServiceProvider::class);
+$app->register(Illuminate\Redis\RedisServiceProvider::class);
 $app->register(Spatie\Permission\PermissionServiceProvider::class);
 
 
@@ -126,8 +130,14 @@ $app->register(Spatie\Permission\PermissionServiceProvider::class);
 | So that the fully qualified class namespace is not required.
 |
 */
-$app->alias('cache', \Illuminate\Cache\CacheManager::class);  // if you don't have this already
+$app->alias('cache', Illuminate\Cache\CacheManager::class);
 
+$app->alias('mail.manager', Illuminate\Mail\MailManager::class);
+$app->alias('mail.manager', Illuminate\Contracts\Mail\Factory::class);
+
+$app->alias('mailer', Illuminate\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\MailQueue::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes

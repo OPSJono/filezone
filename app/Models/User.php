@@ -3,13 +3,17 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use App\Notifications\VerifyEmail;
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\URL;
 use Laravel\Lumen\Auth\Authorizable;
 use Laravel\Passport\HasApiTokens;
 use phpDocumentor\Reflection\Types\Boolean;
@@ -23,7 +27,7 @@ use phpDocumentor\Reflection\Types\Boolean;
  */
 class User extends BaseModel implements AuthenticatableContract, AuthorizableContract
 {
-    use SoftDeletes, HasApiTokens, Authenticatable, Authorizable;
+    use SoftDeletes, HasApiTokens, Authenticatable, Authorizable, MustVerifyEmail, Notifiable;
 
     /**
      * @var bool
@@ -51,6 +55,21 @@ class User extends BaseModel implements AuthenticatableContract, AuthorizableCon
         'password',
     ];
 
+    /**
+     * Send the email verification notification.
+     *
+     * Override the trait method so we can pass our own version of Verify Email
+     *
+     * @return void
+     */
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new VerifyEmail);
+    }
+
+    /**
+     * @return User|\Illuminate\Contracts\Auth\MustVerifyEmail
+     */
     public static function currentUser(): User
     {
         /**
@@ -65,6 +84,7 @@ class User extends BaseModel implements AuthenticatableContract, AuthorizableCon
                 'first_name' => 'dummy',
                 'last_name' => 'user',
                 'email' => 'dummyuser@test.com',
+                'email_verified_at' => null
             ]);
         }
 

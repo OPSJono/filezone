@@ -3,6 +3,7 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
 use App\Models\User;
+use Carbon\Carbon;
 use Faker\Generator as Faker;
 
 /*
@@ -22,5 +23,6 @@ $factory->define(User::class, function (Faker $faker) {
         'last_name' => $faker->lastName,
         'email' => $faker->email,
         'password' => app()->make('hash')->make('password'),
+        'email_verified_at' => Carbon::now(),
     ];
 });

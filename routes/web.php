@@ -43,7 +43,13 @@ $router->get('/', function (Request $request) use ($router) {
 $router->group(['prefix' => 'v1/oauth'], function () use ($router) {
     LumenPassport::routes($router, ['prefix' => '']);
     $router->post('register', ['uses' => 'AuthController@register']);
-    $router->post('logout', ['middleware' => 'auth', 'uses' => 'AuthController@logout']);
+    $router->get('verification/verify', ['as' => 'verification.verify', 'uses' => 'AuthController@verifyEmail']);
+
+    $router->group(['middleware' => 'auth'], function () use ($router) {
+        $router->get('verification/request', ['as' => 'verification.request', 'uses' => 'AuthController@requestEmailVerification']);
+        $router->post('logout', ['uses' => 'AuthController@logout']);
+
+    });
 });
 
 // Main application routes.

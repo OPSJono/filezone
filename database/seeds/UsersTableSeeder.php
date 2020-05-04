@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
 class UsersTableSeeder extends Seeder
@@ -20,6 +21,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'Jonathan@marshalltech.co.uk',
             'superuser' => '1',
             'password' => app()->make('hash')->make('password'),
+            'email_verified_at' => Carbon::now(),
         ]);
         User::create([
             'first_name' => 'Agent',
@@ -28,6 +30,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'Agent@smith.co.uk',
             'superuser' => '0',
             'password' => app()->make('hash')->make('password'),
+            'email_verified_at' => Carbon::now(),
         ]);
         factory(User::class, 18)->create();
     }
