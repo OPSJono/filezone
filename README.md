@@ -1,3 +1,23 @@
+## Running locally with Docker
+
+```
+docker-compose up --build -d
+cp .env.example .env
+```
+
+You will need to set an application key in the `.env` file. (Lumen lacks a command to do this for you)   
+Set the `APP_URL` to match the URL (including any non-standard port) you are using to run the API.  
+
+Migrate and seed the database:
+```
+./php-artisan migrate --seed
+```
+
+Then you should be able to run all the unit tests:
+```
+./phpunit
+```
+
 # Lumen PHP Framework
 
 [![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
