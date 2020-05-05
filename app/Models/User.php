@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use App\Notifications\VerifyEmail;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -110,6 +111,11 @@ class User extends BaseModel implements AuthenticatableContract, AuthorizableCon
         return parent::can($ability, $arguments = []);
     }
 
+    public function setEmailAttribute($value)
+    {
+        $this->attributes['email'] = htmlspecialchars(trim(strtolower($value)));
+    }
+
     public function setPassword(string $password): void
     {
         if(!empty($password)) {
@@ -129,5 +135,29 @@ class User extends BaseModel implements AuthenticatableContract, AuthorizableCon
             $token->expires_at = Carbon::now();
             $token->save();
         });
+    }
+
+    /**
+     * @param string $username
+     * @return User
+     * @throws AuthorizationException
+     */
+    public function findForPassport($username) {
+        $email = htmlspecialchars(trim(strtolower($username)));
+
+        /**
+         * @var User $user
+         */
+        $user = User::whereRaw("LOWER(email) = '{$email}'")->first();
+
+        if(!$user instanceof User) {
+            throw new AuthorizationException("Invalid Email, Username or Password.", 403);
+        }
+
+        if(is_null($user->email_verified_at)) {
+            throw new AuthorizationException("You must verify your email address before you can login.", 403);
+        }
+
+        return $user;
     }
 }

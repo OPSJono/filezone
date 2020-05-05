@@ -21,7 +21,7 @@ $factory->define(User::class, function (Faker $faker) {
         'first_name' => $faker->firstName,
         'middle_name' => $faker->firstName,
         'last_name' => $faker->lastName,
-        'email' => $faker->email,
+        'email' => strtolower($faker->email),
         'password' => app()->make('hash')->make('password'),
         'email_verified_at' => Carbon::now(),
     ];

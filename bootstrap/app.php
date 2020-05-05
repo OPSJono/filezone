@@ -83,7 +83,8 @@ $app->configure('server');
 */
 
 $app->middleware([
-    App\Http\Middleware\CorsMiddleware::class
+    App\Http\Middleware\CorsMiddleware::class,
+    App\Http\Middleware\LowercaseEmailInputMiddleware::class
 ]);
 
 $app->routeMiddleware([
