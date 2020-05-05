@@ -3,7 +3,7 @@
 class UserLoginTest extends BaseOauth
 {
     /**
-     * Test is a user can successfully register a new account using valid information
+     * Test a user can log in with valid creds
      *
      * @return void
      * @test
@@ -23,7 +23,7 @@ class UserLoginTest extends BaseOauth
     }
 
     /**
-     * Test is a user can successfully register a new account using valid information
+     * Test the correct error is returned for invalid creds
      *
      * @return void
      * @test
@@ -41,11 +41,9 @@ class UserLoginTest extends BaseOauth
 
         $content = json_decode($response->getContent(), true);
 
-        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals(403, $response->getStatusCode());
 
-        $this->assertTrue(array_key_exists('error', $content));
-        $this->assertTrue(array_key_exists('error_description', $content));
-        $this->assertTrue(array_key_exists('hint', $content));
         $this->assertTrue(array_key_exists('message', $content));
+        $this->assertEquals("Invalid Email, Username or Password.", $content['message']);
     }
 }

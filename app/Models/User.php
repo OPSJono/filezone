@@ -142,7 +142,8 @@ class User extends BaseModel implements AuthenticatableContract, AuthorizableCon
      * @return User
      * @throws AuthorizationException
      */
-    public function findForPassport($username) {
+    public function findForPassport($username)
+    {
         $email = htmlspecialchars(trim(strtolower($username)));
 
         /**
@@ -159,5 +160,19 @@ class User extends BaseModel implements AuthenticatableContract, AuthorizableCon
         }
 
         return $user;
+    }
+
+    /**
+     * @param string $password
+     * @return bool
+     * @throws AuthorizationException
+     */
+    public function validateForPassportPasswordGrant($password)
+    {
+        if(!password_verify($password, $this->password)) {
+            throw new AuthorizationException("Invalid Email, Username or Password.", 403);
+        }
+
+        return true;
     }
 }
