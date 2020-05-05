@@ -68,20 +68,33 @@ class AuthController extends Controller
     }
 
     /**
-     * @acl auth
+     * @acl guest
      *
      * @return JsonResponse
      */
     public function requestEmailVerification()
     {
-        $currentUser = User::currentUser();
+        $user_id = $this->request->input('user_id', null);
 
-        if ($currentUser->hasVerifiedEmail()) {
-            $this->apiResponse->setResponseCode(400);
-            $this->apiResponse->setGeneralError("Your email is already verified");
+        if(is_null($user_id)) {
+            $this->apiResponse->setError("You must specify a `user_id` parameter");
+        }
+
+        /**
+         * @var User $user
+         */
+        $user = User::find($user_id);
+
+        if(!$user instanceof User) {
+            $this->apiResponse->setError("No user with that ID found.");
         } else {
-            $currentUser->sendEmailVerificationNotification();
-            $this->apiResponse->setSuccess(['sent' => true]);
+            if ($user->hasVerifiedEmail()) {
+                $this->apiResponse->setResponseCode(400);
+                $this->apiResponse->setGeneralError("Your email is already verified");
+            } else {
+                $user->sendEmailVerificationNotification();
+                $this->apiResponse->setSuccess(['sent' => true]);
+            }
         }
 
         return $this->apiResponse->returnResponse();
