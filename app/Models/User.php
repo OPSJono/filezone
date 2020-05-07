@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\PasswordReset;
 use Carbon\Carbon;
 use App\Notifications\VerifyEmail;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -56,6 +57,8 @@ class User extends BaseModel implements AuthenticatableContract, AuthorizableCon
         'password',
     ];
 
+    protected $passwordResetUrl = '';
+
     /**
      * Send the email verification notification.
      *
@@ -66,6 +69,16 @@ class User extends BaseModel implements AuthenticatableContract, AuthorizableCon
     public function sendEmailVerificationNotification()
     {
         $this->notify(new VerifyEmail);
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @return void
+     */
+    public function sendPasswordResetNotification()
+    {
+        $this->notify(new PasswordReset);
     }
 
     /**
@@ -121,6 +134,25 @@ class User extends BaseModel implements AuthenticatableContract, AuthorizableCon
         if(!empty($password)) {
             $this->password = app()->make('hash')->make($password);
         }
+    }
+
+    public function setPasswordResetUrl(string $url): void
+    {
+        if(!empty($url)) {
+            $this->passwordResetUrl = trim($url);
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getPasswordResetUrl(): string
+    {
+        if(!empty($this->passwordResetUrl)) {
+            return $this->passwordResetUrl;
+        }
+
+        return '';
     }
 
     public function invalidateAllTokens(): void

@@ -8,3 +8,5 @@ Homestead.yaml
 # Laravel Passport Keys
 storage/oauth-public.key
 storage/oauth-private.key
+
+public/email.html
