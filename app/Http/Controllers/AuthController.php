@@ -109,12 +109,18 @@ class AuthController extends Controller
      */
     public function requestPasswordReset()
     {
-        $email = $this->request->input('email', null);
+        /**
+         * @var $validator Validator
+         */
+        $validator = app()->make('validator')->make($this->request->input(), [
+            'email' => 'required|email|exists:users,email',
+        ]);
 
-        if(is_null($email)) {
-            $this->apiResponse->setError("You must specify the `email` parameter");
+        if(!$validator->passes()) {
+            $this->apiResponse->handleErrors($validator);
         }
 
+        $email = $this->request->input('email', null);
         $email = htmlspecialchars(trim(strtolower($email)));
 
         /**
