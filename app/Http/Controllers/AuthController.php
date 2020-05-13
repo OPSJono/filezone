@@ -183,10 +183,65 @@ class AuthController extends Controller
 
             if ($validator->passes()) {
                 $user->setPassword($this->request->input('password'));
-                $this->apiResponse->setSuccess(['changed' => true]);
+                $this->apiResponse->setSuccess(['changed' => $user->save()]);
             } else {
                 $this->apiResponse->handleErrors($validator);
             }
+        }
+
+        return $this->apiResponse->returnResponse();
+    }
+
+    /**
+     * Reset the user password based on input.
+     *
+     * @acl public
+     *
+     * @return JsonResponse
+     *
+     * @throws AuthorizationException
+     */
+    public function validateUrlSignature()
+    {
+        /**
+         * @var $validator Validator
+         */
+        $validator = app()->make('validator')->make($this->request->input(), [
+            'id' => 'required',
+            'expires' => 'required',
+            'hash' => 'required',
+            'signature' => 'required',
+        ]);
+
+        if($validator->passes()) {
+            if(!$this->request->hasCorrectSignature($this->request, false)) {
+                $this->apiResponse->setError("URL Signature is invalid.");
+            }
+
+            if(!$this->request->signatureHasNotExpired($this->request)) {
+                $this->apiResponse->setError("URL has expired.");
+            }
+
+            /**
+             * @var User|MustVerifyEmail $user
+             */
+            $user = User::find($this->request->input('id', null));
+
+            if(!$user instanceof User) {
+                $this->apiResponse->setError("No user found.");
+            } else {
+                if (! hash_equals((string) $this->request->input('id'), (string) $user->getKey())) {
+                    throw new AuthorizationException;
+                }
+
+                if (! hash_equals((string) $this->request->input('hash'), sha1($user->getEmailForVerification()))) {
+                    throw new AuthorizationException;
+                }
+
+                $this->apiResponse->setSuccess(['email' => $user->getEmailForVerification()]);
+            }
+        } else {
+            $this->apiResponse->handleErrors($validator);
         }
 
         return $this->apiResponse->returnResponse();

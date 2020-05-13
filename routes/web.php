@@ -44,6 +44,7 @@ $router->group(['prefix' => 'v1/oauth'], function () use ($router) {
     LumenPassport::routes($router, ['prefix' => '']);
 
     $router->post('register', ['uses' => 'AuthController@register']);
+    $router->addRoute(['GET', 'POST'], 'validate-url-signature', ['as' => 'validate-url-signature', 'uses' => 'AuthController@validateUrlSignature']);
     $router->post('password/request', ['as' => 'password.request', 'uses' => 'AuthController@requestPasswordReset']);
 
     $router->group(['middleware' => 'signed'], function () use ($router) {

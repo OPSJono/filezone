@@ -46,6 +46,15 @@ class AppServiceProvider extends ServiceProvider
                     Arr::except($this->query(), 'signature')
                 ), '?');
 
+            // Here we allow the user to validate the hash values for a different URL than the current.
+            if($this->filled('validate_for_path')) {
+                $original = str_replace(
+                    $this->path(),
+                    ltrim($this->input('validate_for_path'), '/'),
+                    $original
+                );
+            }
+
             $key = $this->input('id', null);
 
             $signature = hash_hmac('sha256', $original, $key);
@@ -59,7 +68,7 @@ class AppServiceProvider extends ServiceProvider
          * @param Request $request
          * @return bool
          */
-        Request::macro('signatureHasNotExpired', function ($absolute = true) {
+        Request::macro('signatureHasNotExpired', function () {
             /**
              * @var $this Request
              */
