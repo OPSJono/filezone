@@ -24,6 +24,11 @@ class Folder extends BaseModel
         'description',
     ];
 
+    protected $appends = [
+        'sub_folder_count',
+        'files_count',
+    ];
+
     /**
      * @param $value
      * @void
@@ -50,5 +55,23 @@ class Folder extends BaseModel
     public function files()
     {
         return $this->hasMany(File::class, 'folder_id', 'id');
+    }
+
+    public function getSubFolderCountAttribute()
+    {
+        if(isset($this->childFolders)) {
+            return count($this->childFolders);
+        }
+
+        return 0;
+    }
+
+    public function getFilesCountAttribute()
+    {
+        if(isset($this->files)) {
+            return count($this->files);
+        }
+
+        return 0;
     }
 }
