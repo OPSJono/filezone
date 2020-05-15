@@ -1,6 +1,7 @@
 <?php
 
 use Carbon\Carbon;
+use Faker\Factory;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\UploadedFile;
@@ -73,11 +74,14 @@ class FilesTableSeeder extends Seeder
 
         $hash = md5_file($storagePath);
 
+
+        $faker = Factory::create();
+
         $this->db->table('files')->insert([
             'folder_id' => 1,
             'guid' => $guid,
-            'name' => 'SuperAdmin file upload',
-            'description' => 'The first file uploaded by the super user',
+            'name' => ucfirst($faker->domainWord . ' ' . $faker->domainWord),
+            'description' => ucfirst(str_replace('-', ' ', $faker->slug)),
             'extension' => 'png',
             'mimetype' => 'image/png',
             'size' => '200',

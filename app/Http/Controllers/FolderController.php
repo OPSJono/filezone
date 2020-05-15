@@ -19,7 +19,9 @@ class FolderController extends Controller
         $user = User::currentUser();
 
         $user->load([
-            'folders',
+            'folders' => function($query) {
+                $query->rootFolders();
+            },
         ]);
 
         /**

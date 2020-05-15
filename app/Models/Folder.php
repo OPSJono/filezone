@@ -57,6 +57,12 @@ class Folder extends BaseModel
         return $this->hasMany(File::class, 'folder_id', 'id');
     }
 
+    public function scopeRootFolders($query)
+    {
+        $query->whereNull('parent_folder_id');
+
+    }
+
     public function getSubFolderCountAttribute()
     {
         if(isset($this->childFolders)) {
