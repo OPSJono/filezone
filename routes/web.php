@@ -80,7 +80,7 @@ $router->group(['middleware' => 'auth', 'prefix' => 'v1'], function () use ($rou
         $router->post('create', ['uses' => 'UserController@create']);
         $router->get('{id}/view', ['uses' => 'UserController@view']);
         $router->post('{id}/update', ['uses' => 'UserController@update']);
-        $router->post('{id}/delete', ['uses' => 'UserController@delete']);
+        $router->delete('{id}/delete', ['uses' => 'UserController@delete']);
     });
 
     // Endpoints for Folders.
@@ -89,7 +89,7 @@ $router->group(['middleware' => 'auth', 'prefix' => 'v1'], function () use ($rou
         $router->post('create', ['uses' => 'FolderController@create']);
         $router->get('{id}/view', ['uses' => 'FolderController@view']);
         $router->post('{id}/update', ['uses' => 'FolderController@update']);
-        $router->post('{id}/delete', ['uses' => 'FolderController@delete']);
+        $router->delete('{id}/delete', ['uses' => 'FolderController@delete']);
     });
 
     // Endpoints for Files in a Folder.
@@ -98,7 +98,7 @@ $router->group(['middleware' => 'auth', 'prefix' => 'v1'], function () use ($rou
         $router->post('create', ['uses' => 'FileController@create']);
         $router->get('{id}/view', ['uses' => 'FileController@view']);
         $router->post('{id}/update', ['uses' => 'FileController@update']);
-        $router->post('{id}/delete', ['uses' => 'FileController@delete']);
+        $router->delete('{id}/delete', ['uses' => 'FileController@delete']);
 
         $router->get('{id}/download', ['uses' => 'FileController@download']);
     });
